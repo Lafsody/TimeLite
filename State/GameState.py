@@ -4,7 +4,8 @@ class GameState(State.State):
     def __init__(self):
         self.timeSlot = 0
 
-    def Reset(self):
+    def Init(self):
+        print("GameState")
         self.timeSlot = 0
 
     def Update(self):

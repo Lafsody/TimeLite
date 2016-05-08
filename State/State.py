@@ -5,7 +5,7 @@ class State(ABC):
         pass
 
     @abstractmethod
-    def Reset(self):
+    def Init(self):
         pass
 
     @abstractmethod
