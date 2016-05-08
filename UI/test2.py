@@ -3,7 +3,7 @@ import sys, pygame
 def filltable():
     for i in range(w):
         for j in range(h):
-            mrc[j][i] = pygame.draw.rect(screen, white, (i * 80, j * 80, 80, 80), 2)
+            mrc[j][i] = pygame.draw.rect(screen, white, (i * 40, j * 40, 40, 40), 2)
 
 def move(obj,playerpos, dir):
     spd = [0,0]
@@ -49,7 +49,7 @@ def move(obj,playerpos, dir):
 
 pygame.init()
 
-size = width, height = 800, 800
+size = width, height = 400, 400
 speed = [3, 2]
 black = 0, 0, 0
 white = 255, 255, 255
@@ -63,12 +63,12 @@ mrc = [[" " for x in range(w)] for y in range(h)]
 
 screen = pygame.display.set_mode(size)
 ball = pygame.image.load("ball.gif")
-ball2 = pygame.transform.scale(ball, (80, 80))
-ball3 = pygame.transform.scale(ball, (80, 80))
+ball2 = pygame.transform.scale(ball, (40, 40))
+ball3 = pygame.transform.scale(ball, (40, 40))
 # ballrect = ball2.get_rect()
 ballrect3 = ball3.get_rect()
 
-pygame.key.set_repeat(1, 150)
+pygame.key.set_repeat(1, 300)
 while 1:
     # ballrect = ballrect.move(speed)
     # if ballrect.left < 0 or ballrect.right > width:
@@ -79,7 +79,7 @@ while 1:
     screen.fill(gray)
     for i in range(w):
         for j in range(h):
-            mrc[j][i] = pygame.draw.rect(screen, white, (i * 80, j * 80, 80, 80), 2)
+            mrc[j][i] = pygame.draw.rect(screen, white, (i * 40, j * 40, 40, 40), 2)
     # screen.blit(ball2, ballrect)
     screen.blit(ball3, mrc[playerpos[0]][playerpos[1]])
 
