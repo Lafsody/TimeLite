@@ -13,7 +13,7 @@ import pprint
 dataHolder = DataHolder.DataHolder()
 learningMachine = LearningMachine.LearningMachine(dataHolder)
 
-map = MapGenerator.Generate(10, 10, 10)
+map = MapGenerator.Generate(5, 5, 15)
 dataHolder.SetMap(map)
 learningMachine.Init()
 pprint.pprint(dataHolder.GetQArray())
@@ -26,7 +26,7 @@ currentState = gameState
 
 currentState.Init()
 
-while True:
-    sleep(0.1)
+# while True:
+#     sleep(0.1)
     # currentState.Update()
 
