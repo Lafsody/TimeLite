@@ -1,8 +1,9 @@
 from State import State
 
 class GameState(State.State):
-    def __init__(self):
-        self.timeSlot = 0
+    def __init__(self, dataHolder):
+        self.timeSlot = dataHolder.maxTimeSlot
+        self.dataHolder = dataHolder
 
     def Init(self):
         print("GameState")
@@ -10,4 +11,3 @@ class GameState(State.State):
 
     def Update(self):
         self.timeSlot += 1
-        print(self.timeSlot)
