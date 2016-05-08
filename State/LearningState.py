@@ -30,27 +30,29 @@ class LearningState(State.State):
         for timeSlot in range(1, self.maxTimeSlot):
             actionId, nextPosition = self.RandomAction(playerPosition)
             pass # Update QArray
-            # self.QArray[nextPosition[0]][nextPosition[1]][timeSlot][actionId] = self.GetReward(nextPosition, timeSlot) + int(self.gamma * FindMax(NextState))
-            if (nextPosition == (self.height, self.width)):
+            temp = [self.CanMove(nextPosition, id) for id in range(5)]
+            maxNextQ = max([self.QArray[x[2][0]][x[2][1]][timeSlot + 1][x[1]] for x in temp if x[0]])
+            self.QArray[nextPosition[0]][nextPosition[1]][timeSlot][actionId] = self.GetReward(nextPosition, timeSlot) + int(self.gamma * maxNextQ)
+            if (nextPosition == (self.height - 1, self.width - 1)):
                 break
-            elif (False): # PlayerDie
+            elif (self.map.HasEnemyAt(nextPosition, timeSlot)): # PlayerDie
                 break
             playerPosition = nextPosition
 
     def RandomAction(self, position):
         temp = [self.CanMove(position, id) for id in range(5)]
-        action = [(i, temp[i][1]) for i in len(temp) if temp[i][0]]
+        action = [(x[1], x[2]) for x in temp if x[0]]
         randIdx = random.randrange(len(action))
         return action[randIdx]
 
     def CanMove(self, position, actionId):
         dir = [(0, 0), (-1, 0), (0, 1), (1, 0), (0, -1)]
         x, y = position[0] + dir[actionId][0], position[1] + dir[actionId][1]
-        return (x in range(self.map.height) and y in range(self.map.width)), (x, y)
+        return (x in range(self.map.height) and y in range(self.map.width)), actionId, (x, y)
 
     def GetReward(self, position, timeSlot):
         if(position[0] == self.height - 1 and position[1] == self.width):
-            return 10000
+            return 1000000
         elif(self.map.HasEnemyAt(position, timeSlot)): # map.HasEnemyAt(timeSlot)
             return -1000000
         else:
