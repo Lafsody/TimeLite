@@ -5,3 +5,11 @@ class Map:
         self.height = height
         self.width = width
         self.enemies = enemies
+
+    def HasEnemyAt(self, position, timeSlot):
+        for enemy in self.enemies:
+            if enemy.GetPositionAt(timeSlot) == position:
+                return True
+        return False
+
+
