@@ -92,7 +92,7 @@ class LearningMachine():
             for i in range(self.dataHolder.actionIdSize):
                 b, actionId, nextPosition = self.CanMove(position, i)
                 if b:
-                    val = qArray[nextPosition[0]][nextPosition[1]][timeSlot][actionId] > maxVal
+                    val = qArray[position[0]][position[1]][timeSlot][actionId]
                     if val > maxVal:
                         maxVal = val
                         path = []
@@ -102,4 +102,8 @@ class LearningMachine():
             rand = random.randrange(len(path))
             paths.append(path[rand])
             position = path[rand]
+            if (position[0] == self.height - 1 and position[1] == self.width - 1):
+                break
+            elif (self.map.HasEnemyAt(position, timeSlot)):  # map.HasEnemyAt(timeSlot)
+                break
         return  paths
