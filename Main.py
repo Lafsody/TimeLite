@@ -13,7 +13,7 @@ import pprint
 dataHolder = DataHolder.DataHolder()
 learningMachine = LearningMachine.LearningMachine(dataHolder)
 
-map = MapGenerator.Generate(5, 5, 15)
+map = MapGenerator.Generate(4, 7, 0)
 dataHolder.SetMap(map)
 learningMachine.Init()
 pprint.pprint(dataHolder.GetQArray())
@@ -26,7 +26,23 @@ currentState = gameState
 
 currentState.Init()
 
-# while True:
-#     sleep(0.1)
-    # currentState.Update()
+from UI import TestUI
+# print(TestUI.size)
+# TestUI.init(5, 10, 15)
+# print(TestUI.size)
 
+TestUI.Init(dataHolder.map.width, dataHolder.map.height, len(dataHolder.map.enemies))
+playerPath = learningMachine.GetPathFromQ()
+print (len(playerPath))
+print (playerPath)
+
+timeSlot = 0
+while True:
+    sleep(0.5)
+    if timeSlot < len(playerPath):
+        enemyPosList = [enemy.GetPositionAt(timeSlot) for enemy in dataHolder.map.enemies]
+        TestUI.Update(playerPath[timeSlot], enemyPosList)
+        timeSlot += 1
+
+    for event in TestUI.pygame.event.get():
+        if event.type == TestUI.pygame.QUIT: TestUI.sys.exit()

@@ -4,7 +4,7 @@ import math
 
 class LearningMachine():
     def __init__(self, dataHolder):
-        self.gamma = 0.8
+        self.gamma = 0.5
         self.dataHolder = dataHolder
 
     def Init(self):
@@ -25,16 +25,17 @@ class LearningMachine():
         for timeSlot in range(0, self.dataHolder.maxTimeSlot - 1):
             # actionId, nextPosition = self.RandomAction(playerPosition)
             # actionId, nextPosition = self.RandomActionGreedy(playerPosition, qArray, timeSlot, round, maxRound)
-            actionId, nextPosition = self.RandomActionSimpleGreedy(playerPosition, qArray, timeSlot, round, maxRound)
+            # actionId, nextPosition = self.RandomActionSimpleGreedy(playerPosition, qArray, timeSlot, round, maxRound)
+            actionId, nextPosition = self.RandomActionGreedy2(playerPosition, timeSlot)
             pass # Update QArray
             temp = [self.CanMove(nextPosition, id) for id in range(self.dataHolder.actionIdSize)]
             maxNextQ = max([qArray[nextPosition[0]][nextPosition[1]][timeSlot + 1][x[1]] for x in temp if x[0]])
-            # qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] = self.GetReward(nextPosition, timeSlot + 1) + int(self.gamma * maxNextQ)
-            qSA = qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId]
-            qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] += self.GetReward(nextPosition, timeSlot + 1) + int(self.gamma * (maxNextQ - qSA))
+            qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] = self.GetReward2(nextPosition, timeSlot + 1) + int(self.gamma * maxNextQ)
+            #qSA = qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId]
+            #qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] += self.GetReward2(nextPosition, timeSlot + 1) + int(self.gamma * (maxNextQ - qSA))
             if (nextPosition == (self.height - 1, self.width - 1)):
                 break
-            elif (self.map.HasEnemyAt(nextPosition, timeSlot)): # PlayerDie
+            elif (self.map.HasEnemyAt(nextPosition, timeSlot + 1)): # PlayerDie
                 break
             playerPosition = nextPosition
 
@@ -68,9 +69,22 @@ class LearningMachine():
         rand = random.randrange(len(posList))
         return posList[rand]
 
+    def RandomActionGreedy2(self, position, timeSlot):
+        temp = [self.CanMove(position, id) for id in range(self.dataHolder.actionIdSize)]
+        possibleActions = [(x[1], x[2]) for x in temp if x[0]]
+        qArray = self.dataHolder.GetQArray()
+        best = max(qArray[pos[0]][pos[1]][timeSlot][aID] for (aID, pos) in possibleActions)
+        bestActions = [(aID, pos) for (aID, pos) in possibleActions if qArray[pos[0]][pos[1]][timeSlot][aID] == best]
+        otherActions = [(aID, pos) for (aID, pos) in possibleActions if qArray[pos[0]][pos[1]][timeSlot][aID] < best]
+        actions = bestActions if (random.random() < 0.8 and len(bestActions) > 0) or len(otherActions) == 0 else otherActions
+        randIdx = random.randrange(len(actions))
+        return actions[randIdx]
+
     def CanMove(self, position, actionId):
         dir = [(0, 0), (-1, 0), (0, 1), (1, 0), (0, -1)]
-        x, y = position[0] + dir[actionId][0], position[1] + dir[actionId][1]
+        # print(position)
+        # print("__%d : %d __" % (position[0], position[1]))
+        x, y = (position[0] + dir[actionId][0]),(position[1] + dir[actionId][1])
         return (0 <= x < self.map.height) and (0 <= y < self.map.width), actionId, (x, y)
 
     def GetReward(self, position, timeSlot):
@@ -81,29 +95,30 @@ class LearningMachine():
         else:
             return  -timeSlot * ( (self.height - position[0]) + (self.width - position[1]))
 
+    def GetReward2(self, position, timeSlot):
+        if(position[0] == self.height - 1 and position[1] == self.width - 1):
+            return 2000
+        elif(self.map.HasEnemyAt(position, timeSlot)): # map.HasEnemyAt(timeSlot)
+            return -10000
+        else:
+            return -timeSlot + position[0] + position[1]
+
     def GetPathFromQ(self):
+
         qArray = self.dataHolder.GetQArray()
         paths = []
         position = (0, 0)
         paths.append(position)
         for timeSlot in range(self.dataHolder.maxTimeSlot):
-            path = []
-            maxVal = -1000000000000
-            for i in range(self.dataHolder.actionIdSize):
-                b, actionId, nextPosition = self.CanMove(position, i)
-                if b:
-                    val = qArray[position[0]][position[1]][timeSlot][actionId]
-                    if val > maxVal:
-                        maxVal = val
-                        path = []
-                        path.append(nextPosition)
-                    elif val == maxVal:
-                        path.append(nextPosition)
-            rand = random.randrange(len(path))
-            paths.append(path[rand])
-            position = path[rand]
-            if (position[0] == self.height - 1 and position[1] == self.width - 1):
+            temp = [self.CanMove(position, id) for id in range(self.dataHolder.actionIdSize)]
+            possibleActions = [(x[1], x[2]) for x in temp if x[0]]
+            best = max(qArray[pos[0]][pos[1]][timeSlot][aID] for (aID, pos) in possibleActions)
+            bestActions = [(aID, pos) for (aID, pos) in possibleActions if qArray[pos[0]][pos[1]][timeSlot][aID] == best]
+            randIdx = random.randrange(len(bestActions))
+            position = bestActions[randIdx][1]
+            paths.append(position)
+            if position == (self.height - 1, self.width - 1):
                 break
-            elif (self.map.HasEnemyAt(position, timeSlot)):  # map.HasEnemyAt(timeSlot)
+            elif self.map.HasEnemyAt(position, timeSlot + 1):  # map.HasEnemyAt(timeSlot)
                 break
-        return  paths
+        return paths
