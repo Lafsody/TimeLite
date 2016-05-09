@@ -13,7 +13,7 @@ import pprint
 dataHolder = DataHolder.DataHolder()
 learningMachine = LearningMachine.LearningMachine(dataHolder)
 
-map = MapGenerator.Generate(4, 7, 0)
+map = MapGenerator.Generate(5, 7, 10)
 dataHolder.SetMap(map)
 learningMachine.Init()
 pprint.pprint(dataHolder.GetQArray())
