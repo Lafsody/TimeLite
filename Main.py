@@ -38,7 +38,6 @@ print (playerPath)
 
 timeSlot = 0
 while True:
-    sleep(0.5)
     if timeSlot < len(playerPath):
         enemyPosList = [enemy.GetPositionAt(timeSlot) for enemy in dataHolder.map.enemies]
         TestUI.Update(playerPath[timeSlot], enemyPosList)
@@ -46,3 +45,11 @@ while True:
 
     for event in TestUI.pygame.event.get():
         if event.type == TestUI.pygame.QUIT: TestUI.sys.exit()
+        if event.type == TestUI.pygame.KEYDOWN:
+            if event.key == TestUI.pygame.K_SPACE:
+                timeSlot = 0
+            elif event.key == TestUI.pygame.K_l:
+                learningMachine.Learn(1000)
+                playerPath = learningMachine.GetPathFromQ()
+                print(str(playerPath[len(playerPath) - 1]) + str(len(playerPath)))
+                timeSlot = 0

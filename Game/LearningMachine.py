@@ -12,7 +12,7 @@ class LearningMachine():
         self.map = self.dataHolder.GetMap()
         self.height = self.map.height
         self.width = self.map.width
-        self.Learn(20000)
+        self.Learn(10000)
 
     def Learn(self, round):
         for i in range(round):
@@ -25,12 +25,12 @@ class LearningMachine():
         for timeSlot in range(0, self.dataHolder.maxTimeSlot - 1):
             # actionId, nextPosition = self.RandomAction(playerPosition)
             # actionId, nextPosition = self.RandomActionGreedy(playerPosition, qArray, timeSlot, round, maxRound)
-            actionId, nextPosition = self.RandomActionSimpleGreedy(playerPosition, qArray, timeSlot, round, maxRound)
-            # actionId, nextPosition = self.RandomActionGreedy2(playerPosition, timeSlot)
+            # actionId, nextPosition = self.RandomActionSimpleGreedy(playerPosition, qArray, timeSlot, round, maxRound)
+            actionId, nextPosition = self.RandomActionGreedy2(playerPosition, timeSlot)
             pass # Update QArray
             temp = [self.CanMove(nextPosition, id) for id in range(self.dataHolder.actionIdSize)]
             maxNextQ = max([qArray[nextPosition[0]][nextPosition[1]][timeSlot + 1][x[1]] for x in temp if x[0]])
-            qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] = self.GetReward(nextPosition, timeSlot + 1) + int(self.gamma * maxNextQ)
+            qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] = self.GetReward2(nextPosition, timeSlot + 1) + int(self.gamma * maxNextQ)
             #qSA = qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId]
             #qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] += self.GetReward2(nextPosition, timeSlot + 1) + int(self.gamma * (maxNextQ - qSA))
             if self.map.HasEnemyAt(nextPosition, timeSlot + 1):
@@ -82,24 +82,22 @@ class LearningMachine():
 
     def CanMove(self, position, actionId):
         dir = [(0, 0), (-1, 0), (0, 1), (1, 0), (0, -1)]
-        # print(position)
-        # print("__%d : %d __" % (position[0], position[1]))
         x, y = (position[0] + dir[actionId][0]),(position[1] + dir[actionId][1])
         return (0 <= x < self.map.height) and (0 <= y < self.map.width), actionId, (x, y)
 
     def GetReward(self, position, timeSlot):
-        if(position[0] == self.height - 1 and position[1] == self.width - 1):
-            return 2000000000
-        elif(self.map.HasEnemyAt(position, timeSlot)): # map.HasEnemyAt(timeSlot)
+        if (self.map.HasEnemyAt(position, timeSlot)): # map.HasEnemyAt(timeSlot)
             return -10000000
+        elif (position[0] == self.height - 1 and position[1] == self.width - 1):
+            return 2000000000
         else:
             return  -timeSlot * ( (self.height - position[0]) + (self.width - position[1]))
 
     def GetReward2(self, position, timeSlot):
-        if(position[0] == self.height - 1 and position[1] == self.width - 1):
-            return 2000
-        elif(self.map.HasEnemyAt(position, timeSlot)): # map.HasEnemyAt(timeSlot)
-            return -10000
+        if (self.map.HasEnemyAt(position, timeSlot)):  # map.HasEnemyAt(timeSlot)
+            return -100
+        elif (position[0] == self.height - 1 and position[1] == self.width - 1):
+            return 200
         else:
             return -timeSlot + position[0] + position[1]
 
