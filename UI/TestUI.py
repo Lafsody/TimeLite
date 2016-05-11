@@ -1,7 +1,12 @@
 import sys, pygame, math
+from UI import Buttons
 
 pygame.init()
+
+pygame.display.set_caption("TimeLite")
+
 width, height = 0, 0
+underBarSize = 100
 screen = None
 
 color = {}
@@ -11,11 +16,13 @@ color['gray'] = 180, 180, 180
 
 playerObj = None
 enemyObjList = []
+LearnButton = Buttons.Button()
+RerunButton = Buttons.Button()
 
 def Init(w, h, enemiesNo):
     global width, height, screen
     width, height = w, h
-    screen = pygame.display.set_mode((w * 80, h * 80 + 100))
+    screen = pygame.display.set_mode((w * 80, h * 80 + underBarSize))
 
     global playerObj, enemyObjList
     playerPic = pygame.image.load("ball.gif")
@@ -61,6 +68,11 @@ def Update(pPos, ePosList):
             screen.blit(playerObj, playerPos)
             for i in range(len(enemyPosList)):
                 screen.blit(enemyObjList[i], enemyPosList[i])
+
+            # Parameters:        surface,      color,     x,   y, length, height, width,  text, text_color
+            LearnButton.create_button(screen, (107, 142, 35), width * 80 - underBarSize, height * 80, underBarSize, underBarSize, 0, "Learn", (255, 255, 255))
+            RerunButton.create_button(screen, (142, 107, 35), width * 80 - underBarSize * 2, height * 80, underBarSize,
+                                  underBarSize, 0, "Rerun", (255, 255, 255))
             pygame.display.flip()
     oldPlayerPos = pPos
     oldEnemyPosList = [ePos for ePos in ePosList]

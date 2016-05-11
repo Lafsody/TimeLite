@@ -13,7 +13,7 @@ import pprint
 dataHolder = DataHolder.DataHolder()
 learningMachine = LearningMachine.LearningMachine(dataHolder)
 
-map = MapGenerator.Generate(5, 7, 10)
+map = MapGenerator.Generate(5, 7, 12)
 dataHolder.SetMap(map)
 learningMachine.Init()
 pprint.pprint(dataHolder.GetQArray())
@@ -36,6 +36,11 @@ playerPath = learningMachine.GetPathFromQ()
 print (len(playerPath))
 print (playerPath)
 
+def LearnAndReset():
+    learningMachine.Learn(1000)
+    playerPath = learningMachine.GetPathFromQ()
+    print(str(playerPath[len(playerPath) - 1]) + str(len(playerPath)))
+
 timeSlot = 0
 while True:
     if timeSlot < len(playerPath):
@@ -49,7 +54,11 @@ while True:
             if event.key == TestUI.pygame.K_SPACE:
                 timeSlot = 0
             elif event.key == TestUI.pygame.K_l:
-                learningMachine.Learn(1000)
-                playerPath = learningMachine.GetPathFromQ()
-                print(str(playerPath[len(playerPath) - 1]) + str(len(playerPath)))
+                LearnAndReset()
+                timeSlot = 0
+        if event.type == TestUI.pygame.MOUSEBUTTONDOWN:
+            if TestUI.LearnButton.pressed(TestUI.pygame.mouse.get_pos()):
+                LearnAndReset()
+                timeSlot = 0
+            elif TestUI.RerunButton.pressed(TestUI.pygame.mouse.get_pos()):
                 timeSlot = 0
