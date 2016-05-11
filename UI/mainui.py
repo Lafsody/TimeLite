@@ -21,7 +21,7 @@ def init(width, height, player, enemy):
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Timelite')
 
-    ball = pygame.image.load("ball.gif")
+    ball = pygame.image.load("player.png")
     ball2 = pygame.transform.scale(ball, (80, 80))
     ball3 = pygame.transform.scale(ball, (80, 80))
     ballrect3 = ball3.get_rect()
