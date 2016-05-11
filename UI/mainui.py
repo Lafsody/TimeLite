@@ -19,7 +19,9 @@ def init(width, height, player, enemy):
     print(enemypos)
 
     screen = pygame.display.set_mode(size)
-    ball = pygame.image.load("ball.gif")
+    pygame.display.set_caption('Timelite')
+
+    ball = pygame.image.load("player.png")
     ball2 = pygame.transform.scale(ball, (80, 80))
     ball3 = pygame.transform.scale(ball, (80, 80))
     ballrect3 = ball3.get_rect()
@@ -40,6 +42,20 @@ def init(width, height, player, enemy):
         for i in range(w):
             for j in range(h):
                 mrc[j][i] = pygame.draw.rect(screen, color['white'], (i * 80, j * 80, 80, 80), 2)
+
+        # font = pygame.font.Font(None, 12)
+        # text = font.render("Start", 1, (10, 10, 10))
+        # textpos = text.get_rect()
+        # textpos.centerx = mrc[0][0].get_rect().centerx
+        # mrc[0][0].blit(text, textpos)
+
+        basicFont = pygame.font.SysFont(None, 12)
+        text = basicFont.render('Hello world!', True, color["white"], color["gray"])
+        textRect = text.get_rect()
+        textRect.centerx = mrc[0][0].centerx
+        textRect.centery = mrc[0][0].centery
+        screen.blit(text, textRect)
+
         screen.blit(ball3, mrc[playerpos[0]][playerpos[1]])
         # screen.blit(enemypic2, mrc[3][3])
 
