@@ -16,7 +16,7 @@ def GenerateEnemies(numEnemy = 0, height = 1, width = 1):
 
 def GenerateEnemy(height, width):
     start = (0, 0)
-    while (start == (0, 0)) :
+    while (start == (0, 0) or start == (height - 1, width - 1)) :
         start = (random.randrange(height), random.randrange(width))
 
     direction = random.randint(0, 1)

@@ -12,4 +12,5 @@ class Map:
                 return True
         return False
 
-
+    def GetEnemyAt(self, position, timeSlot):
+        return [enemy for enemy in self.enemies if enemy.GetPositionAt(timeSlot) == position]
