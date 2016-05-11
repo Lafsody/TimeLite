@@ -12,7 +12,7 @@ class LearningMachine():
         self.map = self.dataHolder.GetMap()
         self.height = self.map.height
         self.width = self.map.width
-        self.Learn(5000)
+        self.Learn(10000)
 
     def Learn(self, round):
         for i in range(round):
@@ -34,8 +34,8 @@ class LearningMachine():
             oldQValue = qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId]
             # qSA = qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId]
             # newQValue = qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] + self.GetReward2(nextPosition, timeSlot + 1) + int(self.gamma * (maxNextQ - qSA))
-            # if oldQValue < newQValue or oldQValue == 0:
-            qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] = newQValue
+            if oldQValue < newQValue or oldQValue == 0:
+                qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] = newQValue
             self.dataHolder.freqArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] += 1
             #qSA = qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId]
             #qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] += self.GetReward2(nextPosition, timeSlot + 1) + int(self.gamma * (maxNextQ - qSA))
@@ -89,6 +89,13 @@ class LearningMachine():
         #     best = min(freqArray[pos[0]][pos[1]][timeSlot][aID] for (aID, pos) in possibleActions)
         #     bestActions = [(aID, pos) for (aID, pos) in possibleActions if freqArray[pos[0]][pos[1]][timeSlot][aID] == best]
         #     otherActions = [(aID, pos) for (aID, pos) in possibleActions if freqArray[pos[0]][pos[1]][timeSlot][aID] > best]
+        freqArray = self.dataHolder.GetFreqArray()
+        bestF = min(freqArray[pos[0]][pos[1]][timeSlot][aID] for (aID, pos) in possibleActions)
+        bestActionsF = [(aID, pos) for (aID, pos) in possibleActions if freqArray[pos[0]][pos[1]][timeSlot][aID] == bestF]
+        otherActionsF = [(aID, pos) for (aID, pos) in possibleActions if freqArray[pos[0]][pos[1]][timeSlot][aID] > bestF]
+
+        bestActions += bestActionsF
+        otherActions += otherActionsF
 
         actions = bestActions if (random.random() < 0.8 and len(bestActions) > 0) or len(otherActions) == 0 else otherActions
         randIdx = random.randrange(len(actions))

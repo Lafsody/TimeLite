@@ -59,7 +59,7 @@ def FillBG():
     screen.blit(textGoal, textGoalRect)
 
 from time import sleep
-def Update(pPos, ePosList):
+def Update(pPos, ePosList, roundPerTimeSlot, tpf):
     global width, height, screen, color, playerObj, enemyObjList
     global playerPos, enemyPosList, oldPlayerPos, oldEnemyPosList
 
@@ -75,19 +75,20 @@ def Update(pPos, ePosList):
             screen.blit(enemyObjList[i], enemyPosList[i])
         pygame.display.flip()
     else:
-        for t in range(80):
-            sleep(0.005)
+        for t in range(roundPerTimeSlot):
+            dist = 80 / roundPerTimeSlot
+            sleep(tpf)
             FillBG()
-            playerPos.move_ip(tuple(x for x in (pPos[0] - oldPlayerPos[0], pPos[1] - oldPlayerPos[1])))
+            playerPos.move_ip(tuple(x for x in  (dist * (pPos[0] - oldPlayerPos[0]), dist * (pPos[1] - oldPlayerPos[1]))))
             for i in range(len(enemyPosList)):
-                enemyPosList[i].move_ip(tuple(x for x in (ePosList[i][0] - oldEnemyPosList[i][0], ePosList[i][1] - oldEnemyPosList[i][1])))
+                enemyPosList[i].move_ip(tuple(x for x in (dist * (ePosList[i][0] - oldEnemyPosList[i][0]),dist * (ePosList[i][1] - oldEnemyPosList[i][1]))))
             screen.blit(playerObj, playerPos)
             for i in range(len(enemyPosList)):
                 screen.blit(enemyObjList[i], enemyPosList[i])
 
             # Parameters:        surface,      color,     x,   y, length, height, width,  text, text_color
-            LearnButton.create_button(screen, (107, 142, 35), width * 80 - underBarSize, height * 80, underBarSize, underBarSize, 0, "Learn", (255, 255, 255))
-            RerunButton.create_button(screen, (142, 107, 35), width * 80 - underBarSize * 2, height * 80, underBarSize,
+            LearnButton.create_button(screen, (125, 125, 255), width * 80 - underBarSize, height * 80, underBarSize, underBarSize, 0, "Learn+", (255, 255, 255))
+            RerunButton.create_button(screen, (255, 125, 255), width * 80 - underBarSize * 2, height * 80, underBarSize,
                                   underBarSize, 0, "Rerun", (255, 255, 255))
             pygame.display.flip()
     oldPlayerPos = pPos
