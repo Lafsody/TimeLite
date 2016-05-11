@@ -8,6 +8,8 @@ color = {}
 color['black'] = 0, 0, 0
 color['white'] = 255, 255, 255
 color['gray'] = 180, 180, 180
+color['green'] = 120, 255, 124
+color['red'] = 255, 125, 125
 
 playerObj = None
 enemyObjList = []
@@ -34,7 +36,21 @@ def FillBG():
     screen.fill(color['gray'])
     for i in range(width):
         for j in range(height):
+            if i == 0 and j == 0: pygame.draw.rect(screen, color['green'], (i * 80, j * 80, 80, 80))
+            if i == width-1 and j == height-1: pygame.draw.rect(screen, color['red'], (i * 80, j * 80, 80, 80))
             pygame.draw.rect(screen, color['white'], (i * 80, j * 80, 80, 80), 2)
+    basicFont = pygame.font.SysFont(None, 34)
+    textStart = basicFont.render('START', True, color["white"], color["green"])
+    textGoal = basicFont.render('GOAL!', True, color["white"], color["red"])
+    textStartRect = textStart.get_rect()
+    textGoalRect = textGoal.get_rect()
+    textStartRect.centerx = screen.get_rect().x + 40
+    textStartRect.centery = screen.get_rect().y + 40
+    textGoalRect.centerx = screen.get_rect().x + width*80 - 40
+    textGoalRect.centery = screen.get_rect().y + height*80 - 40
+    screen.blit(textStart, textStartRect)
+    screen.blit(textGoal, textGoalRect)
+
 from time import sleep
 def Update(pPos, ePosList):
     global width, height, screen, color, playerObj, enemyObjList
