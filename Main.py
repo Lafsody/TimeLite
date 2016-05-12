@@ -40,6 +40,7 @@ def LearnAndReset():
     learningMachine.Learn(1000)
     playerPath = learningMachine.GetPathFromQ()
     print(str(playerPath[len(playerPath) - 1]) + str(len(playerPath)))
+    return  playerPath
 
 timeSlot = 0
 isReverse = False
@@ -66,11 +67,11 @@ while True:
             if event.key == TestUI.pygame.K_SPACE:
                 isReverse = True
             elif event.key == TestUI.pygame.K_l:
-                LearnAndReset()
+                playerPath = LearnAndReset()
                 timeSlot = 0
         if event.type == TestUI.pygame.MOUSEBUTTONDOWN:
             if TestUI.LearnButton.pressed(TestUI.pygame.mouse.get_pos()):
-                LearnAndReset()
+                playerPath = LearnAndReset()
                 timeSlot = 0
             elif TestUI.RerunButton.pressed(TestUI.pygame.mouse.get_pos()):
                 isReverse = True
