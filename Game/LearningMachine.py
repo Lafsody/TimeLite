@@ -20,13 +20,16 @@ class LearningMachine():
 
     def RunAI(self, round, maxRound):
         qArray = self.dataHolder.qArray
-        playerPosition = (0,0)
+        startList = self.dataHolder.memorizePath
+        ran = random.randrange(0, len(startList))
+        startTimeslot, playerPosition = startList[ran]
         # pprint.pprint(qArray)
-        for timeSlot in range(0, self.dataHolder.maxTimeSlot - 1):
+        for timeSlot in range(startTimeslot, self.dataHolder.maxTimeSlot - 1):
             # actionId, nextPosition = self.RandomAction(playerPosition)
             # actionId, nextPosition = self.RandomActionGreedy(playerPosition, qArray, timeSlot, round, maxRound)
             # actionId, nextPosition = self.RandomActionSimpleGreedy(playerPosition, qArray, timeSlot, round, maxRound)
             actionId, nextPosition = self.RandomActionGreedy2(playerPosition, timeSlot)
+            self.AddGoodStart(timeSlot, playerPosition)
             pass # Update QArray
             temp = [self.CanMove(nextPosition, id, timeSlot) for id in range(self.dataHolder.actionIdSize)]
             maxNextQ = max([qArray[nextPosition[0]][nextPosition[1]][timeSlot + 1][x[1]] for x in temp if x[0]])
@@ -37,6 +40,7 @@ class LearningMachine():
             if oldQValue < newQValue or oldQValue == 0:
                 qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] = newQValue
             self.dataHolder.freqArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] += 1
+
             #qSA = qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId]
             #qArray[playerPosition[0]][playerPosition[1]][timeSlot][actionId] += self.GetReward2(nextPosition, timeSlot + 1) + int(self.gamma * (maxNextQ - qSA))
             if self.map.HasEnemyAt(nextPosition, timeSlot + 1):
@@ -144,3 +148,15 @@ class LearningMachine():
             elif  position == (self.height - 1, self.width - 1):
                 break
         return paths
+
+    def AddGoodStart(self, timeSlot, position):
+        if position[0] + position[1] > 6:
+            for point in self.dataHolder.memorizePath:
+                if position == point[1]:
+                    if timeSlot < point[0]:
+                        self.dataHolder.memorizePath.remove(point)
+                        break
+                    else:
+                        return
+            self.dataHolder.memorizePath.append((timeSlot, position))
+            print(self.dataHolder.memorizePath)

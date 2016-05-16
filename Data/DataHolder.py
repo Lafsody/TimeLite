@@ -9,6 +9,8 @@ class DataHolder:
         self.qArray = [[[[0 for l in range(self.actionIdSize)] for k in range(self.maxTimeSlot)] for j in range(self.map.width)] for i in range(self.map.height)]
         self.freqArray = [[[[0 for l in range(self.actionIdSize)] for k in range(self.maxTimeSlot)] for j in range(self.map.width)] for i in range(self.map.height)]
         self.hasReach = False
+        self.memorizePath = []
+        self.memorizePath.append((0, (0,0)))
         #self.qArray[self.map.height - 1][self.map.width - 1] = [[10000]]
     def GetMap(self):
         return self.map
