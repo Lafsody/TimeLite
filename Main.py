@@ -19,6 +19,7 @@ def GenerateMap():
     dataHolder.SetMap(map)
     learningMachine.Init()
     playerPath = learningMachine.GetPathFromQ()
+    print(str(playerPath[len(playerPath) - 1]) + str(len(playerPath)))
 
 GenerateMap()
 pprint.pprint(dataHolder.GetQArray())
@@ -63,16 +64,19 @@ while True:
     if not isReverse:
         if timeSlot < len(playerPath):
             enemyPosList = [enemy.GetPositionAt(timeSlot) for enemy in dataHolder.map.enemies]
-            TestUI.Update(playerPath[timeSlot], enemyPosList, 80, 0.0005)
+            knobX = TestUI.timeline.GetKnobPositionAtTimeSlot(timeSlot)
+            TestUI.Update(playerPath[timeSlot], enemyPosList, knobX, 80, 0.0005)
             SetTimeSlot(timeSlot + 1)
     elif isReverse:
         SetTimeSlot(timeSlot - 1)
         if timeSlot >= 0:
             enemyPosList = [enemy.GetPositionAt(timeSlot) for enemy in dataHolder.map.enemies]
-            TestUI.Update(playerPath[timeSlot], enemyPosList, 20, 0.0001)
+            knobX = TestUI.timeline.GetKnobPositionAtTimeSlot(timeSlot)
+            TestUI.Update(playerPath[timeSlot], enemyPosList, knobX, 20, 0.0001)
         else:
             isReverse = False
             SetTimeSlot(0)
+
 
     for event in TestUI.pygame.event.get():
         if event.type == TestUI.pygame.QUIT: TestUI.sys.exit()
@@ -91,14 +95,14 @@ while True:
                 SetTimeSlot(0)
             elif TestUI.RerunButton.pressed(TestUI.pygame.mouse.get_pos()):
                 isReverse = True
-            if TestUI.timeline.knob.collidepoint(event.pos):
-                TestUI.timeline.SetScrolling(True)
-        elif (event.type == TestUI.pygame.MOUSEMOTION and TestUI.timeline.scrolling):
-            if event.rel[0] != 0:
-                move = max(event.rel[0], TestUI.timeline.track.left - TestUI.timeline.knob.left)
-                move = min(move, TestUI.timeline.track.right - TestUI.timeline.knob.right)
-
-                if move != 0:
-                    TestUI.timeline.knob.move_ip((move, 0))
-        elif event.type == TestUI.pygame.MOUSEBUTTONUP:
-            TestUI.timeline.SetScrolling(False)
+            # if TestUI.timeline.knob.collidepoint(event.pos):
+            #     TestUI.timeline.SetScrolling(True)
+        # elif (event.type == TestUI.pygame.MOUSEMOTION and TestUI.timeline.scrolling):
+        #     if event.rel[0] != 0:
+        #         move = max(event.rel[0], TestUI.timeline.track.left - TestUI.timeline.knob.left)
+        #         move = min(move, TestUI.timeline.track.right - TestUI.timeline.knob.right)
+        #
+        #         if move != 0:
+        #             TestUI.timeline.knob.move_ip((move, 0))
+        # elif event.type == TestUI.pygame.MOUSEBUTTONUP:
+        #     TestUI.timeline.SetScrolling(False)

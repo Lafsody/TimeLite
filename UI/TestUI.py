@@ -10,8 +10,8 @@ width, height = 0, 0
 underBarHeigth = 50
 underBarWidth = 200
 # Slider Bar
-barSize = 20
-borderTop = 3
+barSize = 0 #20
+borderTop = 0 #3
 borderSide = 3
 underOverallSize = underBarHeigth + barSize + 2 * borderTop
 
@@ -23,6 +23,7 @@ color['white'] = 255, 255, 255
 color['gray'] = 180, 180, 180
 color['green'] = 120, 255, 124
 color['red'] = 255, 125, 125
+color['blue'] = 125, 125, 255
 
 playerObj = None
 enemyObjList = []
@@ -49,6 +50,7 @@ def Init(w, h, enemiesNo):
 
 oldPlayerPos = None
 oldEnemyPosList = None
+oldKnobX = None
 
 playerPos = None
 enemyPosList = None
@@ -74,9 +76,9 @@ def FillBG():
     screen.blit(textGoal, textGoalRect)
 
 from time import sleep
-def Update(pPos, ePosList, roundPerTimeSlot, tpf):
+def Update(pPos, ePosList, knobX, roundPerTimeSlot, tpf):
     global width, height, screen, color, playerObj, enemyObjList
-    global playerPos, enemyPosList, oldPlayerPos, oldEnemyPosList
+    global playerPos, enemyPosList, oldPlayerPos, oldEnemyPosList, oldKnobX
 
     pPos = pPos[1], pPos[0]
     ePosList = [(ePos[1], ePos[0]) for ePos in ePosList]
@@ -92,6 +94,7 @@ def Update(pPos, ePosList, roundPerTimeSlot, tpf):
     else:
         for t in range(roundPerTimeSlot):
             dist = 80 / roundPerTimeSlot
+            trackDist = 5 / roundPerTimeSlot
             sleep(tpf)
             FillBG()
             playerPos.move_ip(tuple(x for x in  (dist * (pPos[0] - oldPlayerPos[0]), dist * (pPos[1] - oldPlayerPos[1]))))
@@ -111,11 +114,16 @@ def Update(pPos, ePosList, roundPerTimeSlot, tpf):
                                   underBarHeigth, 0, "Rerun", (255, 255, 255))
             #Draw Slider Bar
             # screen.blit(screen, ((timeline.knob.left * timeline.maxTimeSlot) * -1, 0))
-            timeline.draw_sliderBar(screen, color["white"], color["white"], color["red"])
+            # if t % 4 == 0:
+            #     timeline.knob.x += trackDist * (knobX[0] - oldKnobX[0])
+            # timeline.draw_sliderBar(screen, color["white"], color["blue"], color["red"])
 
             pygame.display.flip()
+
+    timeline.knob.x = knobX[0]
     oldPlayerPos = pPos
     oldEnemyPosList = [ePos for ePos in ePosList]
+    oldKnobX = knobX
 
 
 

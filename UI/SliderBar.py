@@ -3,13 +3,13 @@ class SliderBar:
 
     def __init__(self):
         self.scrolling = False
-        self.maxTimeSlot = 5
-        self.currentTimeSlot = 2
+        self.maxTimeSlot = 1
+        self.currentTimeSlot = 0
 
     def setValue(self, x, y, width, height):
         self.track = pygame.Rect(x, y, width, height)
         self.knob = pygame.Rect(self.track)
-        self.knob.x = self.GetTrackPositionAtTimeSlot(self.currentTimeSlot)
+        # self.knob.x = self.GetKnobPositionAtTimeSlot(self.currentTimeSlot)[0]
         self.knob.width = self.track.width / self.maxTimeSlot
 
     def draw_sliderBar(self, surface, trackColor, knobColor, knobBorder):
@@ -32,7 +32,10 @@ class SliderBar:
 
     def SetCurrentTimeSlot(self, _currentTimeSlot):
         self.currentTimeSlot = _currentTimeSlot
-        self.knob.x = self.currentTimeSlot / self.maxTimeSlot * self.track.width
+        # self.knob.x = self.currentTimeSlot / self.maxTimeSlot * self.track.width
 
-    def GetTrackPositionAtTimeSlot(self, _timeSlot):
-        return _timeSlot / self.maxTimeSlot * self.track.width
+    def GetKnobPositionAtTimeSlot(self, _timeSlot):
+        return (_timeSlot * self.GetRatio(), self.knob.y)
+
+    def GetRatio(self):
+        return self.track.width / self.maxTimeSlot
