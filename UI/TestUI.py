@@ -1,12 +1,20 @@
 import sys, pygame, math
 from UI import Buttons
+from UI import  SliderBar
 
 pygame.init()
 
 pygame.display.set_caption("TimeLite.py")
 
 width, height = 0, 0
-underBarSize = 100
+underBarHeigth = 50
+underBarWidth = 200
+# Slider Bar
+barSize = 20
+borderTop = 3
+borderSide = 3
+underOverallSize = underBarHeigth + barSize + 2 * borderTop
+
 screen = None
 
 color = {}
@@ -18,19 +26,26 @@ color['red'] = 255, 125, 125
 
 playerObj = None
 enemyObjList = []
+ReGenerateButton = Buttons.Button()
 LearnButton = Buttons.Button()
 RerunButton = Buttons.Button()
+timeline = SliderBar.SliderBar()
 
 def Init(w, h, enemiesNo):
     global width, height, screen
     width, height = w, h
-    screen = pygame.display.set_mode((w * 80, h * 80 + underBarSize))
+    screen = pygame.display.set_mode((w * 80, h * 80 + underOverallSize))
 
     global playerObj, enemyObjList
     playerPic = pygame.image.load("player.png")
     playerObj = pygame.transform.scale(playerPic, (80, 80))
     enemyPic = pygame.image.load("enemy.png")
     enemyObjList = [pygame.transform.scale(enemyPic, (80, 80)) for i in range(enemiesNo)]
+
+    global underBarWidth
+    underBarWidth = (w * 80) / 3
+
+    timeline.setValue(borderSide, height * 80 + borderTop, width * 80 - borderSide * 2, barSize)
 
 oldPlayerPos = None
 oldEnemyPosList = None
@@ -86,10 +101,18 @@ def Update(pPos, ePosList, roundPerTimeSlot, tpf):
             for i in range(len(enemyPosList)):
                 screen.blit(enemyObjList[i], enemyPosList[i])
 
+            #Draw Button
             # Parameters:        surface,      color,     x,   y, length, height, width,  text, text_color
-            LearnButton.create_button(screen, (125, 125, 255), width * 80 - underBarSize, height * 80, underBarSize, underBarSize, 0, "Learn+", (255, 255, 255))
-            RerunButton.create_button(screen, (255, 125, 255), width * 80 - underBarSize * 2, height * 80, underBarSize,
-                                  underBarSize, 0, "Rerun", (255, 255, 255))
+            ReGenerateButton.create_button(screen, (125, 125, 255), 0,
+                                      height * 80 + barSize + 2 * borderTop, underBarWidth, underBarHeigth, 0, "ReGenerate",
+                                      (255, 255, 255))
+            LearnButton.create_button(screen, (125, 125, 255), width * 80 - underBarWidth, height * 80 + barSize + 2 * borderTop, underBarWidth, underBarHeigth, 0, "Learn+", (255, 255, 255))
+            RerunButton.create_button(screen, (125, 125, 255), width * 80 - underBarWidth * 2, height * 80 + barSize + 2 * borderTop, underBarWidth,
+                                  underBarHeigth, 0, "Rerun", (255, 255, 255))
+            #Draw Slider Bar
+            # screen.blit(screen, ((timeline.knob.left * timeline.maxTimeSlot) * -1, 0))
+            timeline.draw_sliderBar(screen, color["white"], color["white"], color["red"])
+
             pygame.display.flip()
     oldPlayerPos = pPos
     oldEnemyPosList = [ePos for ePos in ePosList]

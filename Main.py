@@ -13,18 +13,23 @@ import pprint
 dataHolder = DataHolder.DataHolder()
 learningMachine = LearningMachine.LearningMachine(dataHolder)
 
-map = MapGenerator.Generate(5, 7, 12)
-dataHolder.SetMap(map)
-learningMachine.Init()
+def GenerateMap():
+    global map, dataHolder, playerPath
+    map = MapGenerator.Generate(5, 7, 12)
+    dataHolder.SetMap(map)
+    learningMachine.Init()
+    playerPath = learningMachine.GetPathFromQ()
+
+GenerateMap()
 pprint.pprint(dataHolder.GetQArray())
 
 menuState = MenuState.MenuState(dataHolder)
-gameState = GameState.GameState(dataHolder)
-generateState = GenerateState.GenerateState(dataHolder)
+# gameState = GameState.GameState(dataHolder)
+# generateState = GenerateState.GenerateState(dataHolder)
 
-currentState = gameState
+# currentState = gameState
 
-currentState.Init()
+# currentState.Init()
 
 from UI import TestUI
 # print(TestUI.size)
@@ -36,30 +41,38 @@ playerPath = learningMachine.GetPathFromQ()
 print (len(playerPath))
 print (playerPath)
 
-def LearnAndReset():
-    learningMachine.Learn(1000)
-    playerPath = learningMachine.GetPathFromQ()
-    print(str(playerPath[len(playerPath) - 1]) + str(len(playerPath)))
-    return  playerPath
-
 timeSlot = 0
 isReverse = False
-while True:
 
+TestUI.timeline.SetMaxTimeSlot(len(playerPath))
+
+def SetTimeSlot(_timeSlot):
+    global timeSlot
+    timeSlot = _timeSlot
+    TestUI.timeline.SetCurrentTimeSlot(_timeSlot)
+
+def LearnAndReset():
+    learningMachine.Learn(1000)
+    global playerPath, timeSlot
+    playerPath = learningMachine.GetPathFromQ()
+    SetTimeSlot(0)
+    TestUI.timeline.SetMaxTimeSlot(len(playerPath))
+    print(str(playerPath[len(playerPath) - 1]) + str(len(playerPath)))
+
+while True:
     if not isReverse:
         if timeSlot < len(playerPath):
             enemyPosList = [enemy.GetPositionAt(timeSlot) for enemy in dataHolder.map.enemies]
             TestUI.Update(playerPath[timeSlot], enemyPosList, 80, 0.0005)
-            timeSlot += 1
+            SetTimeSlot(timeSlot + 1)
     elif isReverse:
-        timeSlot -= 1
+        SetTimeSlot(timeSlot - 1)
         if timeSlot >= 0:
             enemyPosList = [enemy.GetPositionAt(timeSlot) for enemy in dataHolder.map.enemies]
-            print(timeSlot)
             TestUI.Update(playerPath[timeSlot], enemyPosList, 20, 0.0001)
         else:
             isReverse = False
-            timeSlot = 0
+            SetTimeSlot(0)
 
     for event in TestUI.pygame.event.get():
         if event.type == TestUI.pygame.QUIT: TestUI.sys.exit()
@@ -67,11 +80,25 @@ while True:
             if event.key == TestUI.pygame.K_SPACE:
                 isReverse = True
             elif event.key == TestUI.pygame.K_l:
-                playerPath = LearnAndReset()
-                timeSlot = 0
+                LearnAndReset()
         if event.type == TestUI.pygame.MOUSEBUTTONDOWN:
             if TestUI.LearnButton.pressed(TestUI.pygame.mouse.get_pos()):
-                playerPath = LearnAndReset()
-                timeSlot = 0
+                LearnAndReset()
+            elif TestUI.ReGenerateButton.pressed(TestUI.pygame.mouse.get_pos()):
+                GenerateMap()
+                TestUI.timeline.SetMaxTimeSlot(len(playerPath))
+                isReverse = False
+                SetTimeSlot(0)
             elif TestUI.RerunButton.pressed(TestUI.pygame.mouse.get_pos()):
                 isReverse = True
+            if TestUI.timeline.knob.collidepoint(event.pos):
+                TestUI.timeline.SetScrolling(True)
+        elif (event.type == TestUI.pygame.MOUSEMOTION and TestUI.timeline.scrolling):
+            if event.rel[0] != 0:
+                move = max(event.rel[0], TestUI.timeline.track.left - TestUI.timeline.knob.left)
+                move = min(move, TestUI.timeline.track.right - TestUI.timeline.knob.right)
+
+                if move != 0:
+                    TestUI.timeline.knob.move_ip((move, 0))
+        elif event.type == TestUI.pygame.MOUSEBUTTONUP:
+            TestUI.timeline.SetScrolling(False)

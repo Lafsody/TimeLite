@@ -12,7 +12,7 @@ class LearningMachine():
         self.map = self.dataHolder.GetMap()
         self.height = self.map.height
         self.width = self.map.width
-        self.Learn(10000)
+        self.Learn(3000)
 
     def Learn(self, round):
         for i in range(round):
