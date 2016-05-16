@@ -15,7 +15,7 @@ learningMachine = LearningMachine.LearningMachine(dataHolder)
 
 def GenerateMap():
     global map, dataHolder, playerPath
-    map = MapGenerator.Generate(5, 7, 12)
+    map = MapGenerator.Generate(5, 7, 15)
     dataHolder.SetMap(map)
     learningMachine.Init()
     playerPath = learningMachine.GetPathFromQ()

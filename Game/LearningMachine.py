@@ -12,7 +12,7 @@ class LearningMachine():
         self.map = self.dataHolder.GetMap()
         self.height = self.map.height
         self.width = self.map.width
-        self.Learn(3000)
+        self.Learn(1000)
 
     def Learn(self, round):
         for i in range(round):
@@ -150,13 +150,13 @@ class LearningMachine():
         return paths
 
     def AddGoodStart(self, timeSlot, position):
-        if position[0] + position[1] > 6:
+        if position[0] + position[1] > 0:
             for point in self.dataHolder.memorizePath:
-                if position == point[1]:
+                if position == point[1] :
                     if timeSlot < point[0]:
                         self.dataHolder.memorizePath.remove(point)
                         break
                     else:
                         return
             self.dataHolder.memorizePath.append((timeSlot, position))
-            print(self.dataHolder.memorizePath)
+            # print(self.dataHolder.memorizePath)
