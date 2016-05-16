@@ -4,26 +4,33 @@ from UI import  SliderBar
 
 pygame.init()
 
-pygame.display.set_caption("TimeLite.py")
+iconImg = pygame.image.load("timelineIcon.png")
+
+pygame.display.set_icon(iconImg)
+pygame.display.set_caption("TimeLite")
 
 width, height = 0, 0
 underBarHeigth = 50
 underBarWidth = 200
 # Slider Bar
 barSize = 0 #20
-borderTop = 0 #3
+borderTop = 1 #3
 borderSide = 3
 underOverallSize = underBarHeigth + barSize + 2 * borderTop
 
 screen = None
 
 color = {}
-color['black'] = 0, 0, 0
+color['black'] = 10, 10, 10
 color['white'] = 255, 255, 255
 color['gray'] = 180, 180, 180
-color['green'] = 120, 255, 124
+color['green'] = 130, 230, 40
 color['red'] = 255, 125, 125
 color['blue'] = 125, 125, 255
+color["lightBlue"] = 100, 206, 255
+color["softBlue"] = 100, 246, 255
+color["hardBlue"] = 0, 180, 220
+color["darkBlue"] = 0, 50, 50
 
 playerObj = None
 enemyObjList = []
@@ -57,12 +64,12 @@ enemyPosList = None
 
 def FillBG():
     global color, screen, width, height
-    screen.fill(color['gray'])
+    screen.fill(color['hardBlue'])
     for i in range(width):
         for j in range(height):
             if i == 0 and j == 0: pygame.draw.rect(screen, color['green'], (i * 80, j * 80, 80, 80))
             if i == width-1 and j == height-1: pygame.draw.rect(screen, color['red'], (i * 80, j * 80, 80, 80))
-            pygame.draw.rect(screen, color['white'], (i * 80, j * 80, 80, 80), 2)
+            pygame.draw.rect(screen, color['darkBlue'], (i * 80, j * 80, 80, 80), 2)
     basicFont = pygame.font.SysFont(None, 34)
     textStart = basicFont.render('START', True, color["white"], color["green"])
     textGoal = basicFont.render('GOAL!', True, color["white"], color["red"])
@@ -106,11 +113,11 @@ def Update(pPos, ePosList, knobX, roundPerTimeSlot, tpf):
 
             #Draw Button
             # Parameters:        surface,      color,     x,   y, length, height, width,  text, text_color
-            ReGenerateButton.create_button(screen, (125, 125, 255), 0,
+            ReGenerateButton.create_button(screen, color["hardBlue"], color["softBlue"], 0,
                                       height * 80 + barSize + 2 * borderTop, underBarWidth, underBarHeigth, 0, "ReGenerate",
                                       (255, 255, 255))
-            LearnButton.create_button(screen, (125, 125, 255), width * 80 - underBarWidth, height * 80 + barSize + 2 * borderTop, underBarWidth, underBarHeigth, 0, "Learn+", (255, 255, 255))
-            RerunButton.create_button(screen, (125, 125, 255), width * 80 - underBarWidth * 2, height * 80 + barSize + 2 * borderTop, underBarWidth,
+            LearnButton.create_button(screen, color["hardBlue"], color["softBlue"], width * 80 - underBarWidth, height * 80 + barSize + 2 * borderTop, underBarWidth, underBarHeigth, 0, "Learn+", (255, 255, 255))
+            RerunButton.create_button(screen, color["hardBlue"], color["softBlue"], width * 80 - underBarWidth * 2, height * 80 + barSize + 2 * borderTop, underBarWidth,
                                   underBarHeigth, 0, "Rerun", (255, 255, 255))
             #Draw Slider Bar
             # screen.blit(screen, ((timeline.knob.left * timeline.maxTimeSlot) * -1, 0))
