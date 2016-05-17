@@ -45,7 +45,7 @@ def Init(w, h, enemiesNo):
     screen = pygame.display.set_mode((w * 80, h * 80 + underOverallSize))
 
     global playerObj, enemyObjList
-    playerPic = pygame.image.load("player.png")
+    playerPic = pygame.image.load("player1.png")
     playerObj = pygame.transform.scale(playerPic, (80, 80))
     enemyPic = pygame.image.load("enemy.png")
     enemyObjList = [pygame.transform.scale(enemyPic, (80, 80)) for i in range(enemiesNo)]
