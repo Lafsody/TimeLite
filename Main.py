@@ -39,8 +39,9 @@ from UI import TestUI
 
 TestUI.Init(dataHolder.map.width, dataHolder.map.height, len(dataHolder.map.enemies))
 playerPath = learningMachine.GetPathFromQ()
-print (len(playerPath))
-print (playerPath)
+# print (len(playerPath))
+# print (playerPath)
+print(str(len(playerPath)) + " " + str(playerPath))
 
 timeSlot = 0
 isReverse = False
@@ -58,7 +59,8 @@ def LearnAndReset():
     playerPath = learningMachine.GetPathFromQ()
     SetTimeSlot(0)
     TestUI.timeline.SetMaxTimeSlot(len(playerPath))
-    print(str(playerPath[len(playerPath) - 1]) + str(len(playerPath)))
+    # print(str(playerPath[len(playerPath) - 1]) + str(len(playerPath)))
+    print(str(len(playerPath)) + " " + str(playerPath))
 
 while True:
     if not isReverse:
