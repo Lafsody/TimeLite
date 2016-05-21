@@ -1,4 +1,6 @@
 import pygame
+# Code From https://code.google.com/archive/p/ezscroll/source
+
 class SliderBar:
 
     def __init__(self):

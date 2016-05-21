@@ -3,6 +3,7 @@
 #Simon H. Larsen
 #Buttons
 #Project startet: d. 26. august 2012
+# Code From http://www.pygame.org/project-Button+drawer-2541-.html
 import pygame
 
 class Button:
